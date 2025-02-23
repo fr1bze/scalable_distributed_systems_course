@@ -1,6 +1,7 @@
 package com.example.not_simple_project;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,9 +17,12 @@ public class SimpleController {
     }
 
     @PostMapping("/put")
-    public String putValue(@RequestParam String key, @RequestParam String value) {
+    public ResponseEntity<?> putValue(@RequestBody RequestDTO request) {
+        String key = request.getKey();
+        String value = request.getValue();
         mapRepository.put(key, value);
-        return "Saved: " + key + " -> " + value;
+
+        return ResponseEntity.ok("Data saved");
     }
 
     @GetMapping("/get/{key}")
