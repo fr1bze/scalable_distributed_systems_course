@@ -31,7 +31,6 @@ public class SimpleController {
     public ResponseEntity<Object> getValue(@PathVariable String key) {
         String result = mapRepository.get(key).orElse(null);
         if (Objects.equals(result, null)) {
-            System.out.println("null key");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         return ResponseEntity.ok(mapRepository.get(key));
