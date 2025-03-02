@@ -1,16 +1,13 @@
 package com.example.not_simple_project;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 
 @Repository
-@NoArgsConstructor
-@AllArgsConstructor
 public class MapRepository {
     private final ConcurrentMap<String, String> map = new ConcurrentHashMap<>();
 
@@ -18,7 +15,7 @@ public class MapRepository {
         map.put(key, value);
     }
 
-    public String get(String key) {
-        return map.getOrDefault(key, "empty");
+    public Optional<String> get(String key) {
+        return Optional.ofNullable(map.getOrDefault(key, null));
     }
 }

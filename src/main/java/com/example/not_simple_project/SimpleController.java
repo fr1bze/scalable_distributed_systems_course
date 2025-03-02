@@ -1,8 +1,11 @@
 package com.example.not_simple_project;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 
 @RestController
@@ -17,16 +20,20 @@ public class SimpleController {
     }
 
     @PostMapping("/put")
-    public ResponseEntity<?> putValue(@RequestBody RequestDTO request) {
-        String key = request.getKey();
-        String value = request.getValue();
+    public ResponseEntity<?> putValue(@RequestParam String key,
+                                      @RequestParam String value) {
         mapRepository.put(key, value);
 
-        return ResponseEntity.ok("Data saved");
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @GetMapping("/get/{key}")
-    public String getValue(@PathVariable String key) {
-        return mapRepository.get(key);
+    public ResponseEntity<Object> getValue(@PathVariable String key) {
+        String result = mapRepository.get(key).orElse(null);
+        if (Objects.equals(result, null)) {
+            System.out.println("null key");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.ok(mapRepository.get(key));
     }
 }

@@ -3,8 +3,11 @@ package com.example.not_simple_project;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -20,26 +23,22 @@ class SimpleControllerTest {
 
     @Test
     void testPutAndGetValue() throws Exception {
-        when(mapRepository.get("firstKey")).thenReturn("firstValue");
+        when(mapRepository.get("firstKey")).thenReturn("firstValue".describeConstable());
 
-        mockMvc.perform(post("/api/put")
-                        .param("key", "firstKey")
-                        .param("value", "firstValue"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Saved: firstKey -> firstValue"));
+        mockMvc.perform(post("/api/put?key=firstKey&value=firstValue"))
+                        .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/get/firstKey"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("firstValue"));
+                .andExpect(content().string("\"firstValue\""));
     }
 
     @Test
     void getEmptyValue() throws Exception {
-        when(mapRepository.get("ratata")).thenReturn("empty");
+        when(mapRepository.get("ratata")).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/get/ratata"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("empty"));
+                .andExpect(status().isNotFound());
     }
 
 }
